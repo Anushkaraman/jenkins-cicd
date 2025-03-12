@@ -2,7 +2,7 @@ pipeline {
     agent any  // Runs on any available agent
 
     environment {
-        GIT_CREDENTIALS_ID = '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'  // Ensure this matches your saved credential ID
+        GIT_CREDENTIALS_ID =  ''  // Ensure this matches your saved credential ID
         GIT_REPO_URL = 'https://github.com/Anushkaraman/jenkins-cicd.git'
         BRANCH_NAME = 'main'
         DOCKER_IMAGE_NAME = 'my-python-app'
