@@ -1,17 +1,28 @@
 pipeline {
     agent any  // Runs on any available agent
 
+    environment {
+        GIT_CREDENTIALS_ID = 'github-token'  // Ensure this matches your saved credential ID
+        GIT_REPO_URL = 'https://github.com/Anushkaraman/jenkins-cicd.git'
+        BRANCH_NAME = 'main'
+        DOCKER_IMAGE_NAME = 'my-python-app'
+    }
+
     stages {
-        stage('Clone Repo') {
+        stage('Checkout Repository') {
             steps {
-                git 'https://github.com/Anushkaraman/jenkins-cicd.git'
+                script {
+                    echo "Cloning repository from ${GIT_REPO_URL} on branch ${BRANCH_NAME}"
+                }
+                git credentialsId: GIT_CREDENTIALS_ID, branch: BRANCH_NAME, url: GIT_REPO_URL
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t my-python-app .'
+                    echo "Building Docker image..."
+                    sh "docker build -t ${DOCKER_IMAGE_NAME} ."
                 }
             }
         }
@@ -19,9 +30,19 @@ pipeline {
         stage('Run Docker Container') {
             steps {
                 script {
-                    sh 'docker run --rm my-python-app'
+                    echo "Running Docker container..."
+                    sh "docker run --rm ${DOCKER_IMAGE_NAME}"
                 }
             }
+        }
+    }
+
+    post {
+        success {
+            echo "Pipeline completed successfully! ✅"
+        }
+        failure {
+            echo "Pipeline failed! ❌ Check logs for details."
         }
     }
 }
